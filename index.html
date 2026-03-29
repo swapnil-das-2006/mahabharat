@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mahābhārata: A Sourcebook for Worldly Wisdom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Warm Neutrals with Terracotta Accents (Parchment, Slate, Rust) -->
+    <!-- Application Structure Plan: A single-page scrollable dashboard structured into thematic sections. Added an 'AI Oracle' section before the footer to allow users to interact with the text's wisdom dynamically. -->
+    <!-- Visualization & Content Choices: Evolution (Bar), Parva (Doughnut), Comparison (Log-Bar). Added Interactive AI Chat and Dilemma Resolver powered by Gemini API. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        parchment: {
+                            50: '#fdfbf7',
+                            100: '#f5efe6',
+                            200: '#eaddc9',
+                            800: '#5c4c3c',
+                            900: '#3a2f24'
+                        },
+                        rust: {
+                            500: '#b45309',
+                            600: '#92400e',
+                            700: '#78350f'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fdfbf7;
+            color: #3a2f24;
+            scroll-behavior: smooth;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        .chart-container-large {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #b45309;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background-color: #b45309;
+            color: white;
+            border-color: #b45309;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 200px;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #eaddc9;
+            border-top: 2px solid #b45309;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="font-inter antialiased">
+
+    <nav class="fixed w-full bg-parchment-100/90 backdrop-blur border-b border-parchment-200 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="font-cinzel font-bold text-xl text-rust-700">
+                    <a href="#home">ॐ THE EPIC</a>
+                </div>
+                <div class="hidden md:flex space-x-8 font-semibold text-sm">
+                    <a href="#evolution" class="nav-link">Evolution</a>
+                    <a href="#framework" class="nav-link">Life Goals</a>
+                    <a href="#structure" class="nav-link">Structure</a>
+                    <a href="#philosophy" class="nav-link">Philosophy</a>
+                    <a href="#oracle" class="nav-link">AI Oracle</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-16">
+
+        <section id="home" class="min-h-[80vh] flex flex-col justify-center items-center text-center px-4 bg-gradient-to-b from-parchment-100 to-parchment-50">
+            <h1 class="font-cinzel text-5xl md:text-7xl font-bold text-rust-700 mb-6 drop-shadow-sm">THE MAHĀBHĀRATA</h1>
+            <h2 class="text-xl md:text-3xl font-light text-parchment-800 mb-8 max-w-3xl leading-relaxed">A Sourcebook for Worldly Wisdom</h2>
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <span class="px-6 py-2 border-2 border-rust-500 text-rust-700 rounded-full font-cinzel font-semibold tracking-wider">DUTY</span>
+                <span class="px-6 py-2 border-2 border-rust-500 text-rust-700 rounded-full font-cinzel font-semibold tracking-wider">DILEMMA</span>
+                <span class="px-6 py-2 border-2 border-rust-500 text-rust-700 rounded-full font-cinzel font-semibold tracking-wider">DHARMA</span>
+            </div>
+            <p class="max-w-2xl text-lg text-gray-600 mb-10">Composed by the great sage Kṛṣṇa-Dvaipāyana (Veda Vyāsa), this majestic epic evolved over centuries to become an immortal legacy.</p>
+            <a href="#evolution" class="animate-bounce text-rust-600 text-4xl">&#8595;</a>
+        </section>
+
+        <section id="evolution" class="py-20 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="font-cinzel text-4xl font-bold text-parchment-900 mb-4">Evolution of an Epic</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">This section illustrates the monumental growth of the text over centuries and highlights the rigorous modern academic effort to define its absolute core.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-parchment-200">
+                    <h3 class="font-cinzel text-xl font-bold mb-4 text-center">From Jaya to Mahābhārata</h3>
+                    <div class="chart-container">
+                        <canvas id="evolutionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                    <div class="bg-parchment-100 p-8 rounded-xl border border-parchment-200 text-center">
+                        <h3 class="font-cinzel text-2xl font-bold mb-2">The Critical Edition Data</h3>
+                        <p class="text-sm text-gray-600 mb-6">Launched in 1919 at BORI (Pune), definitively completed in 1966.</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <div class="text-3xl font-bold text-rust-600 mb-1">89K+</div>
+                                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Verses Collated</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <div class="text-3xl font-bold text-rust-600 mb-1">1,259</div>
+                                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Manuscripts</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                <div class="text-3xl font-bold text-rust-600 mb-1">47</div>
+                                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Years of Work</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="framework" class="py-20 px-4 bg-parchment-100">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-cinzel text-4xl font-bold text-parchment-900 mb-4">The Four Puruṣārthas</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">The epic serves as an enabling framework for leading a fulfilling life. Interact with the tabs below to explore each life goal.</p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <button class="tab-btn active px-8 py-3 rounded-full border-2 border-rust-600 font-cinzel font-bold transition-all text-rust-700 hover:bg-rust-50" data-target="dharma">DHARMA</button>
+                    <button class="tab-btn px-8 py-3 rounded-full border-2 border-rust-600 font-cinzel font-bold transition-all text-rust-700 hover:bg-rust-50" data-target="artha">ARTHA</button>
+                    <button class="tab-btn px-8 py-3 rounded-full border-2 border-rust-600 font-cinzel font-bold transition-all text-rust-700 hover:bg-rust-50" data-target="kama">KĀMA</button>
+                    <button class="tab-btn px-8 py-3 rounded-full border-2 border-rust-600 font-cinzel font-bold transition-all text-rust-700 hover:bg-rust-50" data-target="moksa">MOKṢA</button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-xl p-8 md:p-12 border border-parchment-200 min-h-[250px] flex items-center justify-center relative overflow-hidden text-center">
+                    <div id="tab-content" class="w-full z-10 transition-opacity duration-300">
+                        <h3 class="font-cinzel text-3xl font-bold text-rust-700 mb-4">Dharma (Duty)</h3>
+                        <div class="text-xl text-parchment-900 mb-4 font-semibold border-b pb-4 max-w-2xl mx-auto">Enabling framework for a sustainable, self-fulfilling life.</div>
+                        <p class="text-gray-600 text-lg max-w-2xl mx-auto">Explores profound religious customs, societal dos and don'ts, and absolute righteous duties required to coexist peacefully.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="structure" class="py-20 px-4 max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-cinzel text-4xl font-bold text-parchment-900 mb-4">Narrative & Structural Organization</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div>
+                    <h3 class="font-cinzel text-2xl font-bold mb-8 text-rust-700">Key Phases of the Narrative</h3>
+                    <div class="relative border-l-4 border-parchment-200 ml-4 md:ml-8 space-y-12 pb-8">
+                        <div class="relative pl-8">
+                            <div class="absolute -left-3 top-0 w-5 h-5 bg-rust-600 rounded-full border-4 border-white"></div>
+                            <h4 class="font-cinzel font-bold text-xl text-parchment-900 mb-2">1. Birth & Rivalry</h4>
+                            <p class="text-gray-600 text-sm">The Adi and Sabha Parvas detail the childhood and growing rivalry, culminating in the treacherous dice game.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <div class="absolute -left-3 top-0 w-5 h-5 bg-rust-600 rounded-full border-4 border-white"></div>
+                            <h4 class="font-cinzel font-bold text-xl text-parchment-900 mb-2">2. Forest Exile</h4>
+                            <p class="text-gray-600 text-sm">Banished to the wilderness, the Pandavas masterfully use this dark period to forge alliances and gather strength.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <div class="absolute -left-3 top-0 w-5 h-5 bg-rust-600 rounded-full border-4 border-white"></div>
+                            <h4 class="font-cinzel font-bold text-xl text-parchment-900 mb-2">3. The Great War</h4>
+                            <p class="text-gray-600 text-sm">Despite extensive peace parleys, a catastrophic conflict erupts, resulting in the total decimation of the Kauravas.</p>
+                        </div>
+                        <div class="relative pl-8">
+                            <div class="absolute -left-3 top-0 w-5 h-5 bg-rust-600 rounded-full border-4 border-white"></div>
+                            <h4 class="font-cinzel font-bold text-xl text-parchment-900 mb-2">4. Post-War Counsel</h4>
+                            <p class="text-gray-600 text-sm">Before his coronation, King Yudhisthira receives a profound masterclass on policy from the dying patriarch Bhisma.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-parchment-200">
+                    <h3 class="font-cinzel text-xl font-bold mb-2 text-center text-rust-700">Distribution of Key Chapters</h3>
+                    <div class="chart-container">
+                        <canvas id="structureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="philosophy" class="py-20 px-4 bg-parchment-900 text-parchment-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="font-cinzel text-4xl font-bold text-parchment-100 mb-4">A Mirror to Reality</h2>
+                    <p class="text-lg text-parchment-200 max-w-3xl mx-auto">Unlike other epics, the Mahābhārata abandons perfect character archetypes. Here we compare it with the Rāmāyaṇa.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-parchment-800 p-8 rounded-xl border border-parchment-700">
+                        <h3 class="font-cinzel text-2xl font-bold text-white mb-6 text-center">Rāmāyaṇa</h3>
+                        <ul class="space-y-4 text-parchment-200">
+                            <li><strong>Scale:</strong> ~24,000 Verses</li>
+                            <li><strong>Approach:</strong> Normative (Ideal archetypes)</li>
+                            <li><strong>Focus:</strong> Personal life, absolute devotion</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-rust-900 p-8 rounded-xl border border-rust-700">
+                        <h3 class="font-cinzel text-2xl font-bold text-white mb-6 text-center">Mahābhārata</h3>
+                        <ul class="space-y-4 text-parchment-200">
+                            <li><strong>Scale:</strong> 100,000 Verses</li>
+                            <li><strong>Approach:</strong> Descriptive (Raw reality)</li>
+                            <li><strong>Focus:</strong> Dynamic dharma, statecraft</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white/5 p-6 rounded-xl border border-white/10">
+                    <h3 class="font-cinzel text-xl font-bold mb-4 text-center">Scale Comparison</h3>
+                    <div class="chart-container-large">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ✨ AI ORACLE SECTION ✨ -->
+        <section id="oracle" class="py-20 px-4 bg-white">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="font-cinzel text-4xl font-bold text-parchment-900 mb-4">The AI Oracle</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">Interact with the wisdom of the Mahābhārata using the power of generative AI. Consult the sage or resolve modern dilemmas.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Consult the Sage -->
+                    <div class="bg-parchment-50 p-8 rounded-2xl shadow-sm border border-parchment-200 flex flex-col">
+                        <h3 class="font-cinzel text-2xl font-bold text-rust-700 mb-4">Consult Sage Vyāsa</h3>
+                        <p class="text-sm text-gray-600 mb-6 italic">"Ask a philosophical question about the nature of existence, dharma, or the epic's characters."</p>
+
+                        <textarea id="sage-query" class="w-full h-32 p-4 rounded-xl border border-parchment-300 focus:ring-2 focus:ring-rust-500 focus:outline-none text-sm mb-4" placeholder="e.g., Why did Krishna encourage Arjuna to fight even when Arjuna was in despair?"></textarea>
+
+                        <button onclick="askSage()" id="sage-btn" class="bg-rust-600 hover:bg-rust-700 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50">
+                            ✨ Consult the Sage
+                        </button>
+
+                        <div id="sage-response" class="mt-6 text-sm text-gray-800 leading-relaxed max-h-60 overflow-y-auto hidden"></div>
+                    </div>
+
+                    <!-- Modern Dilemma Resolver -->
+                    <div class="bg-parchment-50 p-8 rounded-2xl shadow-sm border border-parchment-200 flex flex-col">
+                        <h3 class="font-cinzel text-2xl font-bold text-rust-700 mb-4">Modern Dharma Advisor</h3>
+                        <p class="text-sm text-gray-600 mb-6 italic">"Describe a current moral dilemma you face, and I will analyze it through the lens of the Epic's characters."</p>
+
+                        <textarea id="dilemma-query" class="w-full h-32 p-4 rounded-xl border border-parchment-300 focus:ring-2 focus:ring-rust-500 focus:outline-none text-sm mb-4" placeholder="e.g., I have a chance to get ahead at work by withholding credit from a teammate. What would the Pandavas advise?"></textarea>
+
+                        <button onclick="resolveDilemma()" id="dilemma-btn" class="bg-parchment-800 hover:bg-parchment-900 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50">
+                            ✨ Resolve My Dilemma
+                        </button>
+
+                        <div id="dilemma-response" class="mt-6 text-sm text-gray-800 leading-relaxed max-h-60 overflow-y-auto hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-parchment-900 text-parchment-200 py-12 text-center border-t border-parchment-800">
+        <div class="text-4xl mb-6 text-rust-500">ॐ</div>
+        <p class="font-cinzel text-xl tracking-widest mb-8">MAY THE WISDOM OF DHARMA GUIDE YOUR PATH.</p>
+        <div class="max-w-3xl mx-auto px-4">
+            <h4 class="text-sm font-semibold text-parchment-400 uppercase tracking-wider mb-4">Project Team</h4>
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-gray-400">
+                <span>Arijit Lye</span> &bull; <span>Sayan Dey</span> &bull; <span>Swapnil Das</span> &bull; <span>Arpit Pandey</span> &bull; <span>Pratik Gorai</span> &bull; <span>Devansh Kar</span> &bull; <span>Saptarshi Patra</span> &bull; <span>Shaurya Mathur</span> &bull; <span>Snehit Banerjee</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const apiKey = "AIzaSyAPUg8BEYepO1gap4O0D07l0yncY7iSYxA"; // Environment provided
+
+        async function callGemini(prompt, systemInstruction) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            systemInstruction: { parts: [{ text: systemInstruction }] }
+                        })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        return result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    }
+                    if (response.status === 429) {
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                        continue;
+                    }
+                    throw new Error("Failed to fetch from Gemini");
+                } catch (err) {
+                    if (i === 4) throw err;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function askSage() {
+            const query = document.getElementById('sage-query').value;
+            const btn = document.getElementById('sage-btn');
+            const resBox = document.getElementById('sage-response');
+
+            if (!query) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner"></span> Seeking the Sage's wisdom...`;
+            resBox.classList.remove('hidden');
+            resBox.innerHTML = "Sage Vyāsa is contemplating your query...";
+
+            try {
+                const systemPrompt = "You are Veda Vyāsa, the author of the Mahābhārata. Answer the user's philosophical questions with profound, academic, yet poetic wisdom based strictly on the events and characters of the epic. Use the terminology of the epic (Dharma, Karma, Atman, etc.). Keep answers under 150 words.";
+                const answer = await callGemini(query, systemPrompt);
+                resBox.innerHTML = `<strong>The Sage Speaks:</strong><br>${answer.replace(/\n/g, '<br>')}`;
+            } catch (err) {
+                resBox.innerHTML = `<span class="text-red-600 font-bold">Error:</span> The Sage remains silent. Please check your connection or try again later.`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `✨ Consult the Sage`;
+            }
+        }
+
+        async function resolveDilemma() {
+            const query = document.getElementById('dilemma-query').value;
+            const btn = document.getElementById('dilemma-btn');
+            const resBox = document.getElementById('dilemma-response');
+
+            if (!query) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner"></span> Analyzing Dharmic paths...`;
+            resBox.classList.remove('hidden');
+            resBox.innerHTML = "The Oracle is cross-referencing ancient dilemmas...";
+
+            try {
+                const systemPrompt = "You are a Dharmic Analyst. The user will provide a modern moral dilemma. You must analyze it using the philosophy of the Mahābhārata. Frame your advice by suggesting what characters like Yudhiṣṭhira (Absolute Truth), Arjuna (Conflicted Duty), or Bhīṣma (Binding Vows) might say. Be objective and highlight the 'shades of grey'. Keep answers under 150 words.";
+                const answer = await callGemini(query, systemPrompt);
+                resBox.innerHTML = `<strong>Oracle Analysis:</strong><br>${answer.replace(/\n/g, '<br>')}`;
+            } catch (err) {
+                resBox.innerHTML = `<span class="text-red-600 font-bold">Error:</span> The path forward is clouded. Please try again.`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `✨ Resolve My Dilemma`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Chart initialization (identical to previous version)
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#5c4c3c';
+
+            const ctxEvo = document.getElementById('evolutionChart').getContext('2d');
+            new Chart(ctxEvo, {
+                type: 'bar',
+                data: {
+                    labels: ['Jaya', 'Bhāratas', 'Mahābhārata'],
+                    datasets: [{
+                        label: 'Number of Verses',
+                        data: [8000, 24000, 100000],
+                        backgroundColor: ['#eaddc9', '#b45309', '#3a2f24'],
+                        borderWidth: 0, borderRadius: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+
+            const ctxStruct = document.getElementById('structureChart').getContext('2d');
+            new Chart(ctxStruct, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ādi & Sabhā', 'Araṇyaka', 'Udyoga', 'Bhīṣma & Droṇa', 'Śānti & Anuśāsana'],
+                    datasets: [{
+                        data: [297, 299, 197, 290, 507],
+                        backgroundColor: ['#eaddc9', '#b45309', '#78350f', '#3a2f24', '#5c4c3c'],
+                        borderWidth: 2, borderColor: '#ffffff'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom' } } }
+            });
+
+            const ctxComp = document.getElementById('comparisonChart').getContext('2d');
+            new Chart(ctxComp, {
+                type: 'bar',
+                data: {
+                    labels: ['Verses', 'Chapters'],
+                    datasets: [
+                        { label: 'Rāmāyaṇa', data: [24000, 645], backgroundColor: '#eaddc9' },
+                        { label: 'Mahābhārata', data: [100000, 2000], backgroundColor: '#b45309' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'logarithmic' } } }
+            });
+
+            // Tabs Logic
+            const purusharthasData = {
+                dharma: { title: "Dharma (Duty)", subtitle: "Enabling framework for life.", text: "Explores religious customs and righteous duties." },
+                artha: { title: "Artha (Wealth)", subtitle: "Material wherewithal.", text: "Masterclass on governance and statecraft." },
+                kama: { title: "Kāma (Desire)", subtitle: "Biological and intellectual desires.", text: "Examines ambition and attachments." },
+                moksa: { title: "Mokṣa (Liberation)", subtitle: "Breaking mortal limits.", text: "Final ascensions and realizing divine nature." }
+            };
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.getAttribute('data-target');
+                const d = purusharthasData[target];
+                document.getElementById('tab-content').innerHTML = `<h3 class="font-cinzel text-3xl font-bold text-rust-700 mb-4">${d.title}</h3><div class="text-xl mb-4 font-semibold border-b pb-4">${d.subtitle}</div><p>${d.text}</p>`;
+            }));
+        });
+    </script>
+</body>
+</html>
